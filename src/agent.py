@@ -1,7 +1,6 @@
 from dotenv import load_dotenv
 from langchain.agents import create_agent
 from langchain_groq import ChatGroq
-from langgraph.checkpoint.memory import InMemorySaver
 
 from tools import tools
 
@@ -36,8 +35,7 @@ agent = create_agent(
         "- get_product_rating returns average_rating and review_count for a product ID.\n"
         "- describe_product_image returns structured attributes from a product photo.\n"
         "- checkout places the order for a chosen product ID and should only be used when the product selection is settled."
-    ),
-    checkpointer=InMemorySaver(),
+    )
 )
 
 if __name__ == "__main__":
