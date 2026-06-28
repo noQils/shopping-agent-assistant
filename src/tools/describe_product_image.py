@@ -1,9 +1,12 @@
 import os
 import base64
+from dotenv import load_dotenv
 
 from langchain.tools import tool
 from langchain.messages import HumanMessage
 from langchain_groq import ChatGroq
+
+load_dotenv()
 
 vision_llm = ChatGroq(model="meta-llama/llama-4-scout-17b-16e-instruct", temperature=0)
 
