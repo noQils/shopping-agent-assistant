@@ -1,13 +1,6 @@
 import sqlite3
-import sys
-from pathlib import Path
 
-try:
-    from src.db import DB_PATH
-except ModuleNotFoundError:
-    if __package__ is None or __package__ == "":
-        sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-    from db import DB_PATH
+from db import DB_PATH
 
 def create_database():
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
