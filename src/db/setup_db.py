@@ -1,6 +1,6 @@
 import sqlite3
 
-from src.db import DB_PATH
+from db import DB_PATH
 
 def create_database():
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)

@@ -4,7 +4,7 @@ from typing import Optional
 
 from langchain.tools import tool
 
-from src.db import DB_PATH
+from db import DB_PATH
 
 @tool
 def search_product(query: str, max_price: Optional[float] = None, is_organic: Optional[bool] = None) -> str:

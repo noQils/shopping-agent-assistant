@@ -2,7 +2,7 @@ import sqlite3
 
 from langchain.tools import tool
 
-from src.db import DB_PATH
+from db import DB_PATH
 
 @tool
 def checkout(product_id: int) -> str:
