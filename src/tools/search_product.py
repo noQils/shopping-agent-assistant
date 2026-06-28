@@ -7,7 +7,7 @@ from langchain.tools import tool
 from src.db import DB_PATH
 
 @tool
-def search_products(query: str, max_price: Optional[float] = None, is_organic: Optional[bool] = None) -> str:
+def search_product(query: str, max_price: Optional[float] = None, is_organic: Optional[bool] = None) -> str:
     """
     Search the product database by keyword (matched against name, description, and category).
     Optionally filter by maximum price and/or organic status.

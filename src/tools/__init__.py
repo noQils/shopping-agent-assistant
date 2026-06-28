@@ -1,3 +1,3 @@
-from .search_product import search_products
+from .search_product import search_product
 
-tools = [search_products]
+tools = [search_product]
