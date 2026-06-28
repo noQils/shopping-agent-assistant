@@ -23,7 +23,7 @@ if __name__ == "__main__":
                 {
                     "role": "user",
                     "content": (
-                        "I want to buy organic honey less than $20 price."
+                        "I want to buy organic honey with 4.5+ rating and less than $20 price."
                     ),
                 }
             ]
