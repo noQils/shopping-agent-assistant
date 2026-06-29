@@ -61,7 +61,6 @@ def render_message(message):
 def render_assistant_response():
     with st.chat_message("assistant"):
         with st.spinner("Checking the catalog and comparing options..."):
-            print(st.session_state.messages)
             result = agent.invoke({"messages": st.session_state.messages})
             response = result["messages"][-1].content.replace("`", "")
         st.markdown(escape_markdown_money(response))
