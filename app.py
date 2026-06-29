@@ -4,9 +4,10 @@ import tempfile
 
 import streamlit as st
 
-from shopping_agent_assistant.agent import agent
-from shopping_agent_assistant.db import DB_PATH
+from shopping_agent_assistant import agent
+from shopping_agent_assistant.db import ensure_database, DB_PATH
 
+ensure_database()
 
 st.set_page_config(
     page_title="AI Shopping Assistant",

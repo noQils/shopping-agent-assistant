@@ -1,3 +1,7 @@
 from pathlib import Path
 
-DB_PATH = Path(__file__).resolve().parents[2] / "data" / "store.db"
+from .setup_db import create_database, DB_PATH
+
+def ensure_database():
+    if not DB_PATH.exists():
+        create_database()
