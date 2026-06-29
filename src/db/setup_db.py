@@ -1,6 +1,16 @@
 import sqlite3
 
-from db import DB_PATH
+import numpy as np
+from sentence_transformers import SentenceTransformer
+from sqlite_vec import serialize_float32
+
+from src.db import DB_PATH
+
+EMBED_MODEL = SentenceTransformer("all-MiniLM-L6-v2")
+
+
+def build_product_text(name: str, category: str, description: str) -> str:
+    return f"{name}. Category: {category}. Description: {description}"
 
 def create_database():
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -15,6 +25,26 @@ def create_database():
             price REAL,
             description TEXT,
             is_organic INTEGER DEFAULT 0
+        )
+    """)
+
+    # Full-text index for keyword search
+    cursor.execute("""
+        CREATE VIRTUAL TABLE IF NOT EXISTS products_fts USING fts5(
+            name,
+            category,
+            description,
+            content='products',
+            content_rowid='id'
+        )
+    """)
+
+    # Vector storage for semantic search
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS product_embeddings (
+            product_id INTEGER PRIMARY KEY,
+            embedding BLOB NOT NULL,
+            FOREIGN KEY (product_id) REFERENCES products(id)
         )
     """)
 
@@ -159,6 +189,29 @@ def create_database():
         (100, "Reusable Storage Bags",        "household",       9.99, "Reusable food storage bags for pantry and freezer use",               0),
     ]
     cursor.executemany("INSERT OR REPLACE INTO products VALUES (?, ?, ?, ?, ?, ?)", products)
+
+    # Rebuild FTS index from products
+    cursor.execute("INSERT INTO products_fts(products_fts) VALUES ('rebuild')")
+
+    # Build embeddings for all products
+    cursor.execute("DELETE FROM product_embeddings")
+    rows = cursor.execute(
+        "SELECT id, name, category, description FROM products"
+    ).fetchall()
+
+    texts = [
+        build_product_text(name, category, description)
+        for _, name, category, description in rows
+    ]
+    vectors = EMBED_MODEL.encode(texts, normalize_embeddings=True)
+
+    cursor.executemany(
+        "INSERT OR REPLACE INTO product_embeddings (product_id, embedding) VALUES (?, ?)",
+        [
+            (row[0], serialize_float32(np.asarray(vec, dtype=np.float32)))
+            for row, vec in zip(rows, vectors)
+        ],
+    )
 
     # Avg ratings (for reference):
     # Honey:      1→4.625✓  2→3.833  3→4.833($$)  4→3.5  5→4.625✓  6→4.167  7→4.75✓  8→4.0
