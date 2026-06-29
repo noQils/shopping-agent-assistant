@@ -10,6 +10,8 @@ from sentence_transformers import SentenceTransformer
 
 from db import DB_PATH
 
+MIN_VECTOR_SCORE = 0.30
+
 @lru_cache(maxsize=1)
 def get_embed_model() -> SentenceTransformer:
     return SentenceTransformer("all-MiniLM-L6-v2")
@@ -144,6 +146,10 @@ def semantic_search_product(
         vec_results = []
         for row in vec_rows:
             item_vec = to_float32_vector(row["embedding"])
+            vec_score = cosine_similarity(query_vec, item_vec)
+            if vec_score < MIN_VECTOR_SCORE:
+                continue
+
             vec_results.append(
                 {
                     "id": row["id"],
@@ -154,7 +160,7 @@ def semantic_search_product(
                     "is_organic": row["is_organic"],
                     "average_rating": row["average_rating"],
                     "review_count": row["review_count"],
-                    "vec_score": cosine_similarity(query_vec, item_vec),
+                    "vec_score": vec_score,
                 }
             )
 
@@ -184,6 +190,7 @@ def semantic_search_product(
                     "is_organic": bool(product["is_organic"]),
                     "average_rating": product["average_rating"],
                     "review_count": product["review_count"],
+                    "semantic_score": round(product.get("vec_score", 0), 3),
                     "score": round(item["score"], 6),
                 }
             )
