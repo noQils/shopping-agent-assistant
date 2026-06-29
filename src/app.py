@@ -245,12 +245,12 @@ with st.sidebar:
     )
 
     if uploaded_file:
-        st.image(uploaded_file, use_container_width=True)
+        st.image(uploaded_file, width='stretch')
 
     image_disabled = uploaded_file is None or st.session_state.needs_response
     if st.button(
         "Find similar products",
-        use_container_width=True,
+        width='stretch',
         disabled=image_disabled,
     ):
         suffix = os.path.splitext(uploaded_file.name)[1] or ".jpg"
@@ -278,7 +278,7 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
-    if st.button("Clear conversation", use_container_width=True):
+    if st.button("Clear conversation", width='stretch'):
         st.session_state.messages = []
         st.session_state.needs_response = False
         st.session_state.pop("pending_image", None)
@@ -334,7 +334,7 @@ quick_prompts = [
 quick_cols = st.columns(4)
 for index, prompt in enumerate(quick_prompts):
     with quick_cols[index]:
-        if st.button(prompt, use_container_width=True, disabled=st.session_state.needs_response):
+        if st.button(prompt, width='stretch', disabled=st.session_state.needs_response):
             submit_prompt(prompt)
 
 st.markdown('<div class="section-title">Conversation</div>', unsafe_allow_html=True)
