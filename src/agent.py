@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 from langchain.agents import create_agent
 from langchain_groq import ChatGroq
 
-from tools import tools
+from src.tools import tools
 
 load_dotenv()
 

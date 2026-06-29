@@ -8,7 +8,7 @@ import numpy as np
 from langchain.tools import tool
 from sentence_transformers import SentenceTransformer
 
-from db import DB_PATH
+from src.db import DB_PATH
 
 MIN_VECTOR_SCORE = 0.30
 
