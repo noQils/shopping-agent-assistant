@@ -43,18 +43,3 @@ agent = create_agent(
         "- checkout places the order for a chosen product ID and should only be used when the product selection is settled."
     )
 )
-
-if __name__ == "__main__":
-    result = agent.invoke(
-        {
-            "messages": [
-                {
-                    "role": "user",
-                    "content": (
-                        "I want to buy organic honey with 4.5+ rating and less than $20 price."
-                    ),
-                }
-            ]
-        }
-    )
-    print(result["messages"][-1].content)
