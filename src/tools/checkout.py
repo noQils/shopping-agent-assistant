@@ -30,5 +30,5 @@ def checkout(product_id: int) -> str:
 
     return (
         f"Order #{order_id} confirmed! '{name}' has been successfully ordered for ${price:.2f}. "
-        f"Your order will arrive in 1-4 business days. Thank you for shopping with us!"
+        f"Your order will arrive in 1-3 business days. Thank you for shopping with us!"
     )
