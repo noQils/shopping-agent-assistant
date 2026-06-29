@@ -1,16 +1,19 @@
 from dotenv import load_dotenv
 from langchain.agents import create_agent
 from langchain_groq import ChatGroq
+from langgraph.checkpoint.memory import InMemorySaver
 
 from shopping_agent_assistant.tools import tools
 
 load_dotenv()
 
 llm = ChatGroq(model="qwen/qwen3-32b", temperature=0)
+checkpointer = InMemorySaver()
 
 agent = create_agent(
     tools=tools,
     model=llm,
+    checkpointer=checkpointer,
     system_prompt=(
         "You are a precise, practical shopping assistant for a product catalog. "
         "Your job is to help users find the best products, compare options clearly, and complete purchases when asked. "
@@ -37,6 +40,7 @@ agent = create_agent(
         "- Highlight the most important tradeoffs such as price, rating, organic status, category fit, and value.\n"
         "- If a key constraint is missing and it would materially change the recommendation, ask one focused clarifying question.\n"
         "- If ratings are unavailable for a product, say that clearly instead of guessing.\n\n"
+        "- After finding best matching product(s), ask the user if they want to buy it. If so, use checkout to place the order.\n\n"
         "Tool guidance:\n"
         "- search_product supports exact or keyword-style lookup plus optional max_price, is_organic, and min_rating filters. Optional filters are hard constraints; leave them unset unless the user explicitly requested them. Results include average_rating and review_count.\n"
         "- semantic_search_product supports hybrid semantic retrieval plus optional max_price, is_organic, and min_rating filters. Optional filters are hard constraints; leave them unset unless the user explicitly requested them. Results include average_rating and review_count.\n"

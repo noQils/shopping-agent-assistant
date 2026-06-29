@@ -1,6 +1,7 @@
 import os
 import sqlite3
 import tempfile
+from uuid import uuid4
 
 import streamlit as st
 
@@ -65,8 +66,12 @@ def render_assistant_response():
         with st.spinner("Checking the catalog and comparing options..."):
             st.session_state.session_round += 1
             debug_log(session_round=st.session_state.session_round)
-            
-            result = agent.invoke({"messages": st.session_state.messages})
+
+            latest_user_message = st.session_state.messages[-1]
+            result = agent.invoke(
+                {"messages": [latest_user_message]},
+                config={"configurable": {"thread_id": st.session_state.thread_id}},
+            )
             response = result["messages"][-1].content.replace("`", "")
 
             debug_log(assistant_response=response)
@@ -86,6 +91,9 @@ if "needs_response" not in st.session_state:
 
 if "session_round" not in st.session_state:
     st.session_state.session_round = 0
+
+if "thread_id" not in st.session_state:
+    st.session_state.thread_id = str(uuid4())
 
 
 st.markdown(
@@ -292,6 +300,7 @@ with st.sidebar:
         st.session_state.messages = []
         st.session_state.needs_response = False
         st.session_state.session_round = 0
+        st.session_state.thread_id = str(uuid4())
         st.session_state.pop("pending_image", None)
         st.rerun()
 
