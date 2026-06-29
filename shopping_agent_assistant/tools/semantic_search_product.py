@@ -8,7 +8,7 @@ import numpy as np
 from langchain.tools import tool
 from sentence_transformers import SentenceTransformer
 
-from src.db import DB_PATH
+from shopping_agent_assistant.db import DB_PATH
 
 MIN_VECTOR_SCORE = 0.30
 

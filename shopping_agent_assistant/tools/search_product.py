@@ -4,7 +4,7 @@ from typing import Optional
 
 from langchain.tools import tool
 
-from src.db import DB_PATH
+from shopping_agent_assistant.db import DB_PATH
 
 @tool
 def search_product(

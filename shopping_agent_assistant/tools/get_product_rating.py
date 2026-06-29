@@ -3,7 +3,7 @@ import json
 
 from langchain.tools import tool
 
-from src.db import DB_PATH
+from shopping_agent_assistant.db import DB_PATH
 
 @tool
 def get_product_rating(product_id: int) -> str:

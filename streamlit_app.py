@@ -4,8 +4,8 @@ import tempfile
 
 import streamlit as st
 
-from src.agent import agent
-from src.db import DB_PATH
+from shopping_agent_assistant.agent import agent
+from shopping_agent_assistant.db import DB_PATH
 
 
 st.set_page_config(
