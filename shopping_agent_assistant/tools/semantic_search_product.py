@@ -9,6 +9,7 @@ from langchain.tools import tool
 from sentence_transformers import SentenceTransformer
 
 from shopping_agent_assistant.db import DB_PATH
+from shopping_agent_assistant.runtime import debug_log
 
 MIN_VECTOR_SCORE = 0.30
 
@@ -61,9 +62,14 @@ def semantic_search_product(
     """
     Hybrid semantic search over the catalog.
     Uses FTS5 for keyword recall and Python cosine similarity over stored embeddings.
-    Optionally filters by maximum price, organic status, and minimum average rating.
+    Optional filters are hard constraints. Leave max_price, is_organic, and
+    min_rating as None unless the user explicitly requests those exact filters.
+    Do not infer filters from an uploaded image, product category, or general
+    preference language.
     Returns top matching products as JSON, including average_rating and review_count.
     """
+    debug_log(tool_name="semantic_search_product", query=query, max_price=max_price, is_organic=is_organic, min_rating=min_rating, limit=limit)
+
     try:
         conn = get_conn()
         cursor = conn.cursor()
@@ -195,8 +201,12 @@ def semantic_search_product(
                 }
             )
 
+        debug_log(result=json.dumps(final))
+
         return json.dumps(final)
     except Exception as exc:
+        debug_log(error=str(exc))
+
         return json.dumps(
             {
                 "error": "semantic_search_product_failed",

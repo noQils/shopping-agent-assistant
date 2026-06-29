@@ -6,6 +6,7 @@ import streamlit as st
 
 from shopping_agent_assistant import agent
 from shopping_agent_assistant.db import ensure_database, DB_PATH
+from shopping_agent_assistant.runtime import debug_log
 
 ensure_database()
 
@@ -62,8 +63,13 @@ def render_message(message):
 def render_assistant_response():
     with st.chat_message("assistant"):
         with st.spinner("Checking the catalog and comparing options..."):
+            st.session_state.session_round += 1
+            debug_log(session_round=st.session_state.session_round)
+            
             result = agent.invoke({"messages": st.session_state.messages})
             response = result["messages"][-1].content.replace("`", "")
+
+            debug_log(assistant_response=response)
         st.markdown(escape_markdown_money(response))
 
     st.session_state.messages.append({"role": "assistant", "content": response})
@@ -77,6 +83,9 @@ if "messages" not in st.session_state:
 
 if "needs_response" not in st.session_state:
     st.session_state.needs_response = False
+
+if "session_round" not in st.session_state:
+    st.session_state.session_round = 0
 
 
 st.markdown(
@@ -282,6 +291,7 @@ with st.sidebar:
     if st.button("Clear conversation", width='stretch'):
         st.session_state.messages = []
         st.session_state.needs_response = False
+        st.session_state.session_round = 0
         st.session_state.pop("pending_image", None)
         st.rerun()
 

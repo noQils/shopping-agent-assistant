@@ -5,6 +5,7 @@ from typing import Optional
 from langchain.tools import tool
 
 from shopping_agent_assistant.db import DB_PATH
+from shopping_agent_assistant.runtime import debug_log
 
 @tool
 def search_product(
@@ -15,10 +16,15 @@ def search_product(
 ) -> str:
     """
     Search the product database by keyword (matched against name, description, and category).
-    Optionally filter by maximum price, organic status, and minimum average rating.
+    Optional filters are hard constraints. Leave max_price, is_organic, and
+    min_rating as None unless the user explicitly requests those exact filters.
+    Do not infer filters from an uploaded image, product category, or general
+    preference language.
     Returns a JSON array of matching products, each with: id, name, category, price,
     description, is_organic, average_rating, review_count.
     """
+    debug_log(tool_name="search_product", query=query, max_price=max_price, is_organic=is_organic, min_rating=min_rating)
+
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
@@ -81,4 +87,7 @@ def search_product(
         }
         for row in rows
     ]
+
+    debug_log(result=json.dumps(products))
+
     return json.dumps(products)
