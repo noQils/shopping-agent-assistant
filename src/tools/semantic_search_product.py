@@ -53,12 +53,14 @@ def semantic_search_product(
     query: str,
     max_price: Optional[float] = None,
     is_organic: Optional[bool] = None,
+    min_rating: Optional[float] = None,
     limit: int = 5,
 ) -> str:
     """
     Hybrid semantic search over the catalog.
     Uses FTS5 for keyword recall and Python cosine similarity over stored embeddings.
-    Returns top matching products as JSON.
+    Optionally filters by maximum price, organic status, and minimum average rating.
+    Returns top matching products as JSON, including average_rating and review_count.
     """
     try:
         conn = get_conn()
@@ -77,6 +79,21 @@ def semantic_search_product(
             base_where += " AND p.is_organic = ?"
             params.append(1 if is_organic else 0)
 
+        if min_rating is not None:
+            base_where += " AND COALESCE(r.average_rating, 0) >= ?"
+            params.append(min_rating)
+
+        rating_join = """
+            LEFT JOIN (
+                SELECT
+                    product_id,
+                    ROUND(AVG(rating), 2) AS average_rating,
+                    COUNT(*) AS review_count
+                FROM reviews
+                GROUP BY product_id
+            ) r ON r.product_id = p.id
+        """
+
         # 1) FTS search
         fts_results = []
         if query.strip():
@@ -88,9 +105,12 @@ def semantic_search_product(
                     p.price,
                     p.description,
                     p.is_organic,
+                    COALESCE(r.average_rating, 0) AS average_rating,
+                    COALESCE(r.review_count, 0) AS review_count,
                     bm25(products_fts) AS fts_score
                 FROM products_fts
                 JOIN products p ON p.id = products_fts.rowid
+                {rating_join}
                 {base_where}
                 AND products_fts MATCH ?
                 ORDER BY fts_score
@@ -110,9 +130,12 @@ def semantic_search_product(
                 p.price,
                 p.description,
                 p.is_organic,
+                COALESCE(r.average_rating, 0) AS average_rating,
+                COALESCE(r.review_count, 0) AS review_count,
                 pe.embedding
             FROM product_embeddings pe
             JOIN products p ON p.id = pe.product_id
+            {rating_join}
             {base_where}
         """
         cursor.execute(vec_sql, params)
@@ -129,6 +152,8 @@ def semantic_search_product(
                     "price": row["price"],
                     "description": row["description"],
                     "is_organic": row["is_organic"],
+                    "average_rating": row["average_rating"],
+                    "review_count": row["review_count"],
                     "vec_score": cosine_similarity(query_vec, item_vec),
                 }
             )
@@ -157,6 +182,8 @@ def semantic_search_product(
                     "price": product["price"],
                     "description": product["description"],
                     "is_organic": bool(product["is_organic"]),
+                    "average_rating": product["average_rating"],
+                    "review_count": product["review_count"],
                     "score": round(item["score"], 6),
                 }
             )
