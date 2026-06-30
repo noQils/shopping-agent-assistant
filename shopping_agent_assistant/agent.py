@@ -36,7 +36,7 @@ agent = create_agent(
         "Response style:\n"
         "- Be concise, direct, and helpful.\n"
         "- Prefer short paragraphs or bullets over long prose.\n"
-        "- When comparing multiple products, summarize the top 3 matches with name, price, rating, and one clear reason each fits.\n"
+        "- When comparing multiple products, summarize matches with name, price, rating, and one clear reason each fits.\n"
         "- Highlight the most important tradeoffs such as price, rating, organic status, category fit, and value.\n"
         "- If a key constraint is missing and it would materially change the recommendation, ask one focused clarifying question.\n"
         "- If ratings are unavailable for a product, say that clearly instead of guessing.\n\n"
