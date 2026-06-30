@@ -6,7 +6,7 @@ The project is designed as a practical example of an agentic retail assistant: t
 
 ## Demo
 
-https://github.com/user-attachments/assets/ec772c3e-1f17-45cc-bb72-190df61ea0f0
+https://github.com/user-attachments/assets/cb6b7c9e-d950-45f1-a169-84bcf8186006
 
 ## Features
 
