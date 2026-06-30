@@ -84,7 +84,7 @@ Environment variables are loaded from `.env`.
 1. Clone the repository and enter the project directory.
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/noQils/shopping-agent-assistant.git
 cd shopping-agent-assistant
 ```
 

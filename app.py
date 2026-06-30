@@ -7,9 +7,11 @@ import streamlit as st
 
 from shopping_agent_assistant import agent
 from shopping_agent_assistant.db import ensure_database, DB_PATH
+from shopping_agent_assistant.embeddings import get_embed_model
 from shopping_agent_assistant.runtime import debug_log
 
 ensure_database()
+get_embed_model()
 
 st.set_page_config(
     page_title="AI Shopping Assistant",

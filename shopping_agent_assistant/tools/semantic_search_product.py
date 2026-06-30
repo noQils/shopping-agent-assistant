@@ -1,21 +1,16 @@
 import json
 import sqlite3
-from functools import lru_cache
 from collections import defaultdict
 from typing import Optional
 
 import numpy as np
 from langchain.tools import tool
-from sentence_transformers import SentenceTransformer
 
 from shopping_agent_assistant.db import DB_PATH
+from shopping_agent_assistant.embeddings import get_embed_model
 from shopping_agent_assistant.runtime import debug_log
 
 MIN_VECTOR_SCORE = 0.30
-
-@lru_cache(maxsize=1)
-def get_embed_model() -> SentenceTransformer:
-    return SentenceTransformer("all-MiniLM-L6-v2")
 
 
 def get_conn() -> sqlite3.Connection:

@@ -2,12 +2,11 @@ import sqlite3
 from pathlib import Path
 
 import numpy as np
-from sentence_transformers import SentenceTransformer
 from sqlite_vec import serialize_float32
 
-DB_PATH = Path(__file__).resolve().parents[2] / "data" / "store.db"
+from shopping_agent_assistant.embeddings import get_embed_model
 
-EMBED_MODEL = SentenceTransformer("all-MiniLM-L6-v2")
+DB_PATH = Path(__file__).resolve().parents[2] / "data" / "store.db"
 
 
 def build_product_text(name: str, category: str, description: str) -> str:
@@ -213,7 +212,7 @@ def create_database():
         build_product_text(name, category, description)
         for _, name, category, description in rows
     ]
-    vectors = EMBED_MODEL.encode(texts, normalize_embeddings=True)
+    vectors = get_embed_model().encode(texts, normalize_embeddings=True)
 
     cursor.executemany(
         "INSERT OR REPLACE INTO product_embeddings (product_id, embedding) VALUES (?, ?)",
