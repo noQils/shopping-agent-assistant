@@ -63,10 +63,19 @@ def create_database():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS orders (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ordered_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS order_items (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            order_id INTEGER NOT NULL,
             product_id INTEGER NOT NULL,
             product_name TEXT NOT NULL,
             price REAL NOT NULL,
-            ordered_at TEXT NOT NULL DEFAULT (datetime('now')),
+            quantity INTEGER NOT NULL DEFAULT 1,
+            FOREIGN KEY (order_id) REFERENCES orders(id),
             FOREIGN KEY (product_id) REFERENCES products(id)
         )
     """)
