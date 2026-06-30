@@ -35,12 +35,36 @@ def load_catalog_stats():
     }
 
 
+def message_content_to_text(content):
+    if content is None:
+        return ""
+
+    if isinstance(content, str):
+        return content
+
+    if isinstance(content, list):
+        parts = []
+        for item in content:
+            text = message_content_to_text(item)
+            if text:
+                parts.append(text)
+        return "\n".join(parts)
+
+    if isinstance(content, dict):
+        for key in ("text", "content"):
+            if key in content:
+                return message_content_to_text(content[key])
+        return ""
+
+    return str(content)
+
+
 def escape_markdown_money(text):
-    return text.replace("$", r"\$")
+    return message_content_to_text(text).replace("$", r"\$")
 
 
 def is_image_prompt(content):
-    return content.startswith("I uploaded a product image")
+    return message_content_to_text(content).startswith("I uploaded a product image")
 
 
 def submit_prompt(prompt):
@@ -51,7 +75,7 @@ def submit_prompt(prompt):
 
 def render_message(message):
     role = message["role"]
-    content = message["content"]
+    content = message_content_to_text(message["content"])
 
     with st.chat_message(role):
         if role == "user" and is_image_prompt(content):
@@ -72,7 +96,7 @@ def render_assistant_response():
                 {"messages": [latest_user_message]},
                 config={"configurable": {"thread_id": st.session_state.thread_id}},
             )
-            response = result["messages"][-1].content.replace("`", "")
+            response = message_content_to_text(result["messages"][-1].content).replace("`", "")
 
             debug_log(assistant_response=response)
         st.markdown(escape_markdown_money(response))
