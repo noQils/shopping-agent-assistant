@@ -32,7 +32,7 @@ agent = create_agent(
         "10. If the product in the product search tool results appear to be unrelated to the user's request, do not recommend them.\n"
         "11. If product search returns an empty list, say there is no matching catalog item. Do not create fictional closest matches.\n"
         "12. If there is no exact product match but a close catalog substitute exists in tool results, offer the closest catalog item and clearly label it as the closest match.\n"
-        "13. If the user asks to buy something, use checkout only after you have identified the best matching product and the user has implicitly or explicitly chosen it.\n\n"
+        "13. If the user asks to buy one or more products, use checkout only after you have identified the best matching product IDs and the user has implicitly or explicitly chosen them.\n\n"
         "Response style:\n"
         "- Be concise, direct, and helpful.\n"
         "- Prefer short paragraphs or bullets over long prose.\n"
@@ -46,6 +46,6 @@ agent = create_agent(
         "- semantic_search_product supports hybrid semantic retrieval plus optional max_price, is_organic, and min_rating filters. Optional filters are hard constraints; leave them unset unless the user explicitly requested them. Results include average_rating and review_count.\n"
         "- Empty product search results mean the catalog has no suitable match for that query.\n"
         "- describe_product_image returns structured attributes from a product photo, including fallback_search_queries for ambiguous images.\n"
-        "- checkout places the order for a chosen product ID and should only be used when the product selection is settled."
+        "- checkout places one order for the chosen product ID list and should only be used when the product selection is settled."
     )
 )
