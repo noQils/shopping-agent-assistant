@@ -6,11 +6,7 @@ The project is designed as a practical example of an agentic retail assistant: t
 
 ## Demo
 
-<video src="demo.mp4" controls width="100%">
-  Your browser does not support the video tag.
-</video>
-
-[View the demo video](demo.mp4)
+https://github.com/user-attachments/assets/ec772c3e-1f17-45cc-bb72-190df61ea0f0
 
 ## Features
 
