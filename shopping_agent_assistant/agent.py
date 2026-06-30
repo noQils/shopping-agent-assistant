@@ -1,13 +1,20 @@
 from dotenv import load_dotenv
+import os
+
 from langchain.agents import create_agent
 from langchain_groq import ChatGroq
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.checkpoint.memory import InMemorySaver
 
 from shopping_agent_assistant.tools import tools
 
 load_dotenv()
 
-llm = ChatGroq(model="qwen/qwen3-32b", temperature=0)
+try:
+    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
+except Exception:
+    llm = ChatGroq(model="qwen/qwen3-32b", temperature=0)
+
 checkpointer = InMemorySaver()
 
 agent = create_agent(
