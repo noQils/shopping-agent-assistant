@@ -4,6 +4,7 @@ import os
 from langchain.agents import create_agent
 from langchain_groq import ChatGroq
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import InMemorySaver
 
 from shopping_agent_assistant.tools import tools
@@ -91,7 +92,10 @@ SYSTEM_PROMPT = (
 try:
     llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
 except Exception:
-    llm = ChatGroq(model="qwen/qwen3-32b", temperature=0)
+    try:
+        llm = ChatOpenAI(model="gpt-5.4-mini", temperature=0)
+    except Exception:
+        llm = ChatGroq(model="qwen/qwen3-32b", temperature=0)
 
 checkpointer = InMemorySaver()
 

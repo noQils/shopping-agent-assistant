@@ -4,13 +4,13 @@ from dotenv import load_dotenv
 
 from langchain.tools import tool
 from langchain.messages import HumanMessage
-from langchain_groq import ChatGroq
+from langchain_openai import ChatOpenAI
 
 from shopping_agent_assistant.runtime import debug_log
 
 load_dotenv()
 
-vision_llm = ChatGroq(model="meta-llama/llama-4-scout-17b-16e-instruct", temperature=0)
+vision_llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
 @tool
 def describe_product_image(image_path: str) -> str:
